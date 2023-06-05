@@ -20,16 +20,16 @@ async def get_report(session: AsyncSession = Depends(get_async_session),
                      wrapper_services: Aiogoogle = Depends(get_service)):
     """Только для суперюзеров."""
 
-    charity_project = await charity_project_crud.get_projects_by_completion_rate(session)
+    charity_projects = await charity_project_crud.get_projects_by_completion_rate(session)
 
     spreadsheetid = await spreadsheets_create(wrapper_services)
 
     await set_user_permissions(spreadsheetid, wrapper_services)
 
     await spreadsheets_update_value(spreadsheetid,
-                                    charity_project,
+                                    charity_projects,
                                     wrapper_services)
 
     print(f'https://docs.google.com/spreadsheets/d/{spreadsheetid}')
 
-    return charity_project
+    return charity_projects
